@@ -28,6 +28,9 @@
     color:#fff;border-radius:20px;padding:7px 14px;font-size:13px;white-space:nowrap}
   :root[data-theme="light"] .theme-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:var(--text)}
   .theme-btn:hover{filter:brightness(1.12)}
+  .guide-link{margin-right:10px;color:#fff;text-decoration:none;font-size:13px;opacity:.85;border:1px solid rgba(255,255,255,.25);padding:7px 12px;border-radius:20px}
+  .guide-link:hover{opacity:1;background:rgba(255,255,255,.12)}
+  :root[data-theme="light"] .guide-link{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:var(--text)}
   .wrap{display:grid;grid-template-columns:340px 1fr 1fr;gap:14px;padding:14px;align-items:start}
   .wrap > *{min-width:0}
   @media(max-width:1100px){.wrap{grid-template-columns:1fr}}
@@ -121,6 +124,7 @@
     <h1>飞牛 FnOS Docker 部署生成器</h1>
     <p>分组筛选应用 → 自定义主机 IP / 端口 / 映射路径 → 实时生成 docker-compose 与 docker run</p>
   </div>
+  <a class="guide-link" href="guide.html" target="_blank" rel="noopener">使用说明</a>
   <button class="theme-btn" id="themeBtn">☀️ 白天</button>
 </header>
 
