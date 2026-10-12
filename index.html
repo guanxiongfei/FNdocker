@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,34 +8,64 @@
   :root{
     --bg:#0f1419; --panel:#1a212b; --panel2:#222c38; --line:#2c3744;
     --text:#e6edf3; --muted:#8b98a5; --accent:#4f9dff; --accent2:#36c08b;
-    --warn:#ffb454; --danger:#ff6b6b; --chip:#26303c;
+    --warn:#ffb454; --danger:#ff6b6b; --chip:#26303c; --prebg:#0b0f14;
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f6fa; --panel:#ffffff; --panel2:#eef1f6; --line:#d6dde6;
+    --text:#1a212b; --muted:#5b6773; --accent:#1a73e8; --accent2:#1f9d6b;
+    --warn:#b9740a; --danger:#d84545; --chip:#e6ebf2; --prebg:#f0f3f8;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;
-    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-  header{padding:18px 24px;background:linear-gradient(135deg,#16324f,#0f1419);
-    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;transition:background .2s,color .2s}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;
+    background:linear-gradient(135deg,#16324f,#0f1419)}
+  :root[data-theme="light"] header{background:linear-gradient(135deg,#e9eff8,#f4f6fa);border-bottom-color:var(--line)}
   header h1{margin:0;font-size:19px;font-weight:600}
   header p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
+  .theme-btn{cursor:pointer;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    color:#fff;border-radius:20px;padding:7px 14px;font-size:13px;white-space:nowrap}
+  :root[data-theme="light"] .theme-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:var(--text)}
+  .theme-btn:hover{filter:brightness(1.12)}
   .wrap{display:grid;grid-template-columns:340px 1fr 1fr;gap:14px;padding:14px;align-items:start}
+  .wrap > *{min-width:0}
   @media(max-width:1100px){.wrap{grid-template-columns:1fr}}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
   .panel h2{margin:0 0 10px;font-size:14px;color:var(--accent);font-weight:600}
   .globals{display:flex;flex-direction:column;gap:10px}
   .field{display:flex;flex-direction:column;gap:4px}
   .field label{font-size:12px;color:var(--muted)}
-  input[type=text],input[type=number]{background:var(--panel2);border:1px solid var(--line);
+  input[type=text],input[type=number],select{background:var(--panel2);border:1px solid var(--line);
     color:var(--text);border-radius:6px;padding:7px 9px;font-size:13px;width:100%}
-  input:focus{outline:none;border-color:var(--accent)}
-  .row{display:flex;gap:8px;align-items:center}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
   .search{margin-bottom:10px}
-  .apps{display:flex;flex-wrap:wrap;gap:8px;max-height:62vh;overflow:auto;padding-right:4px}
+  #appList{max-height:calc(100vh - 220px);overflow:auto;padding-right:4px}
+  .group{margin-bottom:14px;border:1px solid var(--line);border-radius:8px;padding:10px}
+  .group.dragover{border-color:var(--accent);background:var(--panel2)}
+  .group-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .gt{font-size:13.5px;font-weight:600;color:var(--text)}
+  .gc{font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:0 7px}
+  .mini-btn{cursor:pointer;background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    padding:4px 9px;border-radius:6px;font-size:11.5px}
+  .mini-btn.add{color:var(--accent2);border-color:var(--accent2)}
+  .mini-btn.del{color:var(--danger);border-color:var(--danger)}
+  .mini-btn:hover{filter:brightness(1.12)}
+  .mini-btn.wide{width:100%;text-align:center;margin-top:4px;padding:7px}
+  .apps{display:flex;flex-wrap:wrap;gap:8px;min-height:34px}
   .app-chip{background:var(--chip);border:1px solid var(--line);border-radius:20px;
-    padding:6px 12px;cursor:pointer;font-size:12.5px;user-select:none;transition:.15s;display:flex;gap:6px;align-items:center}
+    padding:6px 10px;cursor:grab;font-size:12.5px;user-select:none;transition:.15s;
+    display:flex;gap:6px;align-items:center}
   .app-chip:hover{border-color:var(--accent)}
   .app-chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .app-chip.drag{opacity:.4}
   .app-chip .tag{font-size:10px;opacity:.7;background:rgba(255,255,255,.12);padding:1px 6px;border-radius:8px}
   .app-chip.on .tag{background:rgba(0,0,0,.18)}
+  .app-chip .edit{font-size:12px;opacity:.8;cursor:pointer}
+  .app-chip .edit:hover{opacity:1;color:var(--warn)}
+  .app-chip .del{font-size:14px;line-height:1;opacity:.7;cursor:pointer;color:var(--danger)}
+  .app-chip .del:hover{opacity:1}
   .cards{display:flex;flex-direction:column;gap:12px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
   .card .chead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -46,40 +76,56 @@
   table{width:100%;border-collapse:collapse;font-size:12px}
   th,td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
   th{color:var(--muted);font-weight:500;font-size:11px}
-  td input{margin:0}
+  td input,td select{margin:0;padding:5px 7px}
   .pfx{color:var(--muted);font-size:11px;white-space:nowrap}
-  .outwrap{display:flex;flex-direction:column;gap:14px}
   .tabs{display:flex;gap:6px;margin-bottom:8px}
   .tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
     padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12.5px}
   .tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  pre{background:#0b0f14;border:1px solid var(--line);border-radius:8px;padding:12px;
-    overflow:auto;max-height:62vh;font-size:12px;line-height:1.45;white-space:pre;margin:0;
-    font-family:"SFMono-Regular",Consolas,Menlo,monospace;color:#cfe3ff}
+  pre{background:var(--prebg);border:1px solid var(--line);border-radius:8px;padding:12px;
+    overflow:auto;max-height:62vh;font-size:12px;line-height:1.5;margin:0;
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace;color:#cfe3ff;
+    white-space:pre-wrap;word-break:break-word}
+  :root[data-theme="light"] pre{color:#13315c}
   .btn{cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:6px;
     padding:7px 14px;font-size:12.5px;font-weight:600}
   .btn.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
   .btn:hover{filter:brightness(1.1)}
   .topbtn{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px}
   .empty{color:var(--muted);text-align:center;padding:40px 0;font-size:13px}
-  .mini{font-size:11px;color:var(--muted)}
-  .access{font-size:12px;color:var(--accent2);margin-top:6px}
   .switch{display:flex;align-items:center;gap:6px}
   input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent)}
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--accent2);
     color:#04241a;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;
     transition:.25s;pointer-events:none;z-index:99}
   .toast.show{opacity:1}
+  .drag-tip{font-size:11px;color:var(--muted);margin:2px 0 8px}
+  /* modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;
+    align-items:center;justify-content:center;padding:20px}
+  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    width:min(640px,100%);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;
+    border-bottom:1px solid var(--line);font-size:15px;font-weight:600}
+  .modal-head .x{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+  .modal-body{padding:14px 16px;overflow:auto}
+  .modal-body .field{margin-bottom:10px}
+  .sub{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px;font-size:12.5px;color:var(--accent)}
+  .mtab{margin-bottom:4px}
+  .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 <header>
-  <h1>飞牛 FnOS Docker 部署生成器</h1>
-  <p>筛选应用 → 自定义主机 IP / 端口 / 映射路径 → 实时生成 docker-compose 与 docker run</p>
+  <div>
+    <h1>飞牛 FnOS Docker 部署生成器</h1>
+    <p>分组筛选应用 → 自定义主机 IP / 端口 / 映射路径 → 实时生成 docker-compose 与 docker run</p>
+  </div>
+  <button class="theme-btn" id="themeBtn">☀️ 白天</button>
 </header>
 
 <div class="wrap">
-  <!-- 左：全局设置 + 应用列表 -->
+  <!-- 左：全局设置 + 分组应用列表 -->
   <div class="panel">
     <h2>全局设置</h2>
     <div class="globals">
@@ -96,9 +142,10 @@
         <label style="margin:0">将端口绑定到指定主机 IP</label>
       </div>
     </div>
-    <h2 style="margin-top:16px">选择应用</h2>
+    <h2 style="margin-top:16px">选择应用（按分组）</h2>
     <input type="text" class="search" id="search" placeholder="搜索应用名 / 类别…">
-    <div class="apps" id="appList"></div>
+    <div class="drag-tip">提示：拖动应用可排序或跨组移动；× 删除应用；分组可删除。</div>
+    <div id="appList"></div>
   </div>
 
   <!-- 中：选中应用配置 -->
@@ -122,105 +169,317 @@
   </div>
 </div>
 
+<!-- 自定义应用弹窗 -->
+<div class="modal" id="modal"><div class="modal-box" id="modalBox"></div></div>
+
 <div class="toast" id="toast">已复制</div>
 
 <script>
-const APPS = [{"key": "qbittorrent", "name": "qBittorrent", "tag": "下载", "desc": "开源 BT/PT 下载客户端，Web 管理界面。", "services": [{"name": "qbittorrent", "image": "linuxserver/qbittorrent:latest", "title": "主服务", "ports": [{"container": "6881", "proto": "tcp", "web": false}, {"container": "6881", "proto": "udp", "web": false}, {"container": "8080", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "qbittorrent/config"}, {"container": "/downloads", "suffix": "qbittorrent/downloads"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}, {"name": "WEBUI_PORT", "value": "8080"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "transmission", "name": "Transmission", "tag": "下载", "desc": "轻量级 BT 下载，资源占用低。", "services": [{"name": "transmission", "image": "linuxserver/transmission:latest", "title": "主服务", "ports": [{"container": "9091", "proto": "tcp", "web": true}, {"container": "51413", "proto": "tcp", "web": false}, {"container": "51413", "proto": "udp", "web": false}], "volumes": [{"container": "/config", "suffix": "transmission/config"}, {"container": "/downloads", "suffix": "transmission/downloads"}, {"container": "/watch", "suffix": "transmission/watch"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "aria2", "name": "Aria2 Pro", "tag": "下载", "desc": "高速多协议下载（HTTP/FTP/BT），含 AriaNg 前端。", "services": [{"name": "aria2", "image": "p3terx/aria2-pro:latest", "title": "主服务", "ports": [{"container": "6800", "proto": "tcp", "web": false}, {"container": "6888", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "aria2/config"}, {"container": "/downloads", "suffix": "aria2/downloads"}], "envs": [{"name": "RPC_SECRET", "value": "your_rpc_secret"}, {"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "jellyfin", "name": "Jellyfin", "tag": "影音", "desc": "开源媒体中心，支持转码与多端播放。", "services": [{"name": "jellyfin", "image": "jellyfin/jellyfin:latest", "title": "主服务", "ports": [{"container": "8096", "proto": "tcp", "web": true}, {"container": "8920", "proto": "tcp", "web": false}], "volumes": [{"container": "/config", "suffix": "jellyfin/config"}, {"container": "/cache", "suffix": "jellyfin/cache"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "emby", "name": "Emby", "tag": "影音", "desc": "媒体服务器，界面友好，部分高级功能需 Premium。", "services": [{"name": "emby", "image": "emby/embyserver:latest", "title": "主服务", "ports": [{"container": "8096", "proto": "tcp", "web": true}, {"container": "8920", "proto": "tcp", "web": false}], "volumes": [{"container": "/config", "suffix": "emby/config"}, {"container": "/cache", "suffix": "emby/cache"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "UID", "value": "0"}, {"name": "GID", "value": "0"}, {"name": "GIDLIST", "value": "0"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "plex", "name": "Plex", "tag": "影音", "desc": "老牌媒体服务器，客户端生态完善。", "services": [{"name": "plex", "image": "plexinc/pms-docker:latest", "title": "主服务", "ports": [{"container": "32400", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "plex/config"}, {"container": "/transcode", "suffix": "plex/transcode"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "PLEX_CLAIM", "value": "claim-your-claim-token"}, {"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "navidrome", "name": "Navidrome", "tag": "影音", "desc": "轻量音乐流媒体服务器，支持 Subsonic 协议。", "services": [{"name": "navidrome", "image": "deluan/navidrome:latest", "title": "主服务", "ports": [{"container": "4533", "proto": "tcp", "web": true}], "volumes": [{"container": "/data", "suffix": "navidrome/data"}, {"container": "/music", "suffix": "music"}], "envs": [{"name": "ND_MUSICFOLDER", "value": "/music"}, {"name": "ND_DATAFOLDER", "value": "/data"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "alist", "name": "Alist", "tag": "网盘", "desc": "多网盘聚合挂载（阿里/天翼/OneDrive 等），统一 Web 访问。", "services": [{"name": "alist", "image": "xhofe/alist:latest", "title": "主服务", "ports": [{"container": "5244", "proto": "tcp", "web": true}], "volumes": [{"container": "/opt/alist/data", "suffix": "alist/data"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "homeassistant", "name": "Home Assistant", "tag": "智能家居", "desc": "开源智能家居中枢，支持海量设备接入与自动化。", "services": [{"name": "homeassistant", "image": "ghcr.io/home-assistant/home-assistant:stable", "title": "主服务", "ports": [{"container": "8123", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "homeassistant/config"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": true, "restart": "unless-stopped", "command": ""}]}, {"key": "vaultwarden", "name": "Vaultwarden", "tag": "密码管理", "desc": "Bitwarden 轻量自托管服务端（Rust 实现）。", "services": [{"name": "vaultwarden", "image": "vaultwarden/server:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/data", "suffix": "vaultwarden/data"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "WEBSOCKET_ENABLED", "value": "true"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "nextcloud", "name": "Nextcloud", "tag": "网盘", "desc": "私有云盘与协作套件，替代公有网盘。", "services": [{"name": "nextcloud", "image": "nextcloud:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/var/www/html", "suffix": "nextcloud/html"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "immich", "name": "Immich", "tag": "照片", "desc": "自托管照片/视频备份与 AI 管理（Google Photos 平替）。", "services": [{"name": "server", "image": "ghcr.io/immich-app/server:release", "title": "服务端", "ports": [{"container": "2283", "proto": "tcp", "web": true}], "volumes": [{"container": "/usr/src/app/upload", "suffix": "immich/upload"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "DB_HOSTNAME", "value": "immich_db"}, {"name": "DB_USERNAME", "value": "immich"}, {"name": "DB_PASSWORD", "value": "postgres"}, {"name": "DB_DATABASE_NAME", "value": "immich"}, {"name": "REDIS_HOSTNAME", "value": "immich_redis"}], "privileged": false, "restart": "unless-stopped", "command": ""}, {"name": "db", "image": "tensorchord/pgvecto-rs:pg14-v0.2.0", "title": "数据库", "ports": [], "volumes": [{"container": "/var/lib/postgresql/data", "suffix": "immich/pgdata"}], "envs": [{"name": "POSTGRES_PASSWORD", "value": "postgres"}, {"name": "POSTGRES_USER", "value": "immich"}, {"name": "POSTGRES_DB", "value": "immich"}], "privileged": false, "restart": "unless-stopped", "command": ""}, {"name": "redis", "image": "redis:6.2-alpine", "title": "缓存", "ports": [], "volumes": [{"container": "/data", "suffix": "immich/redis"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "photoprism", "name": "PhotoPrism", "tag": "照片", "desc": "AI 照片管理，自动分类与地图定位。", "services": [{"name": "photoprism", "image": "photoprism/photoprism:latest", "title": "主服务", "ports": [{"container": "2342", "proto": "tcp", "web": true}], "volumes": [{"container": "/photoprism/storage", "suffix": "photoprism/storage"}, {"container": "/photoprism/originals", "suffix": "photos"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "PHOTOPRISM_UPLOAD_NSFW", "value": "true"}, {"name": "PHOTOPRISM_ADMIN_PASSWORD", "value": "please_change"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "portainer", "name": "Portainer", "tag": "运维", "desc": "Docker 可视化管理面板。", "services": [{"name": "portainer", "image": "portainer/portainer-ce:latest", "title": "主服务", "ports": [{"container": "9000", "proto": "tcp", "web": true}, {"container": "9443", "proto": "tcp", "web": false}], "volumes": [{"container": "/data", "suffix": "portainer/data"}, {"container": "/var/run/docker.sock", "suffix": "docker.sock", "isSocket": true}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "nginxproxymanager", "name": "Nginx Proxy Manager", "tag": "运维", "desc": "可视化反向代理与 SSL 证书管理。", "services": [{"name": "npm", "image": "jc21/nginx-proxy-manager:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": false}, {"container": "81", "proto": "tcp", "web": true}, {"container": "443", "proto": "tcp", "web": false}], "volumes": [{"container": "/data", "suffix": "npm/data"}, {"container": "/etc/letsencrypt", "suffix": "npm/letsencrypt"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "adguardhome", "name": "AdGuard Home", "tag": "网络", "desc": "自建 DNS 去广告与家庭网络过滤。", "services": [{"name": "adguardhome", "image": "adguard/adguardhome:latest", "title": "主服务", "ports": [{"container": "53", "proto": "tcp", "web": false}, {"container": "53", "proto": "udp", "web": false}, {"container": "3000", "proto": "tcp", "web": true}, {"container": "853", "proto": "tcp", "web": false}], "volumes": [{"container": "/opt/adguardhome/conf", "suffix": "adguard/conf"}, {"container": "/opt/adguardhome/work", "suffix": "adguard/work"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "heimdall", "name": "Heimdall", "tag": "导航", "desc": "自托管应用导航页，聚合常用服务入口。", "services": [{"name": "heimdall", "image": "linuxserver/heimdall:latest", "title": "主服务", "ports": [{"container": "7990", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "heimdall/config"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "uptimekuma", "name": "Uptime Kuma", "tag": "监控", "desc": "自托管监控与告警（优雅状态页）。", "services": [{"name": "uptimekuma", "image": "louislam/uptime-kuma:latest", "title": "主服务", "ports": [{"container": "3001", "proto": "tcp", "web": true}], "volumes": [{"container": "/app/data", "suffix": "uptimekuma/data"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "memos", "name": "Memos", "tag": "笔记", "desc": "轻量开源笔记/碎片化记录，支持 Markdown。", "services": [{"name": "memos", "image": "neosmemo/memos:latest", "title": "主服务", "ports": [{"container": "5230", "proto": "tcp", "web": true}], "volumes": [{"container": "/var/opt/memos", "suffix": "memos/data"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}, {"key": "filebrowser", "name": "File Browser", "tag": "文件", "desc": "Web 文件管理器，可浏览/上传/编辑服务器文件。", "services": [{"name": "filebrowser", "image": "filebrowser/filebrowser:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/srv", "suffix": "filebrowser/srv"}, {"container": "/database.db", "suffix": "filebrowser/database.db", "isFile": true}, {"container": "/filebrowser.json", "suffix": "filebrowser/filebrowser.json", "isFile": true}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}]}];
-const NET = "fnos_net";
+const BUILTIN = [{"key": "qbittorrent", "name": "qBittorrent", "tag": "下载", "desc": "开源 BT/PT 下载客户端，Web 管理界面。", "services": [{"name": "qbittorrent", "image": "linuxserver/qbittorrent:latest", "title": "主服务", "ports": [{"container": "6881", "proto": "tcp", "web": false}, {"container": "6881", "proto": "udp", "web": false}, {"container": "8080", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "qbittorrent/config"}, {"container": "/downloads", "suffix": "qbittorrent/downloads"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}, {"name": "WEBUI_PORT", "value": "8080"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "transmission", "name": "Transmission", "tag": "下载", "desc": "轻量级 BT 下载，资源占用低。", "services": [{"name": "transmission", "image": "linuxserver/transmission:latest", "title": "主服务", "ports": [{"container": "9091", "proto": "tcp", "web": true}, {"container": "51413", "proto": "tcp", "web": false}, {"container": "51413", "proto": "udp", "web": false}], "volumes": [{"container": "/config", "suffix": "transmission/config"}, {"container": "/downloads", "suffix": "transmission/downloads"}, {"container": "/watch", "suffix": "transmission/watch"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "aria2", "name": "Aria2 Pro", "tag": "下载", "desc": "高速多协议下载（HTTP/FTP/BT），含 AriaNg 前端。", "services": [{"name": "aria2", "image": "p3terx/aria2-pro:latest", "title": "主服务", "ports": [{"container": "6800", "proto": "tcp", "web": false}, {"container": "6888", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "aria2/config"}, {"container": "/downloads", "suffix": "aria2/downloads"}], "envs": [{"name": "RPC_SECRET", "value": "your_rpc_secret"}, {"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "jellyfin", "name": "Jellyfin", "tag": "影音", "desc": "开源媒体中心，支持转码与多端播放。", "services": [{"name": "jellyfin", "image": "jellyfin/jellyfin:latest", "title": "主服务", "ports": [{"container": "8096", "proto": "tcp", "web": true}, {"container": "8920", "proto": "tcp", "web": false}], "volumes": [{"container": "/config", "suffix": "jellyfin/config"}, {"container": "/cache", "suffix": "jellyfin/cache"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "emby", "name": "Emby", "tag": "影音", "desc": "媒体服务器，界面友好，部分高级功能需 Premium。", "services": [{"name": "emby", "image": "emby/embyserver:latest", "title": "主服务", "ports": [{"container": "8096", "proto": "tcp", "web": true}, {"container": "8920", "proto": "tcp", "web": false}], "volumes": [{"container": "/config", "suffix": "emby/config"}, {"container": "/cache", "suffix": "emby/cache"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "UID", "value": "0"}, {"name": "GID", "value": "0"}, {"name": "GIDLIST", "value": "0"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "plex", "name": "Plex", "tag": "影音", "desc": "老牌媒体服务器，客户端生态完善。", "services": [{"name": "plex", "image": "plexinc/pms-docker:latest", "title": "主服务", "ports": [{"container": "32400", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "plex/config"}, {"container": "/transcode", "suffix": "plex/transcode"}, {"container": "/media", "suffix": "media"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "PLEX_CLAIM", "value": "claim-your-claim-token"}, {"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "navidrome", "name": "Navidrome", "tag": "影音", "desc": "轻量音乐流媒体服务器，支持 Subsonic 协议。", "services": [{"name": "navidrome", "image": "deluan/navidrome:latest", "title": "主服务", "ports": [{"container": "4533", "proto": "tcp", "web": true}], "volumes": [{"container": "/data", "suffix": "navidrome/data"}, {"container": "/music", "suffix": "music"}], "envs": [{"name": "ND_MUSICFOLDER", "value": "/music"}, {"name": "ND_DATAFOLDER", "value": "/data"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "alist", "name": "Alist", "tag": "网盘", "desc": "多网盘聚合挂载（阿里/天翼/OneDrive 等），统一 Web 访问。", "services": [{"name": "alist", "image": "xhofe/alist:latest", "title": "主服务", "ports": [{"container": "5244", "proto": "tcp", "web": true}], "volumes": [{"container": "/opt/alist/data", "suffix": "alist/data"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "file"}, {"key": "homeassistant", "name": "Home Assistant", "tag": "智能家居", "desc": "开源智能家居中枢，支持海量设备接入与自动化。", "services": [{"name": "homeassistant", "image": "ghcr.io/home-assistant/home-assistant:stable", "title": "主服务", "ports": [{"container": "8123", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "homeassistant/config"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": true, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "vaultwarden", "name": "Vaultwarden", "tag": "密码管理", "desc": "Bitwarden 轻量自托管服务端（Rust 实现）。", "services": [{"name": "vaultwarden", "image": "vaultwarden/server:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/data", "suffix": "vaultwarden/data"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "WEBSOCKET_ENABLED", "value": "true"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "nextcloud", "name": "Nextcloud", "tag": "网盘", "desc": "私有云盘与协作套件，替代公有网盘。", "services": [{"name": "nextcloud", "image": "nextcloud:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/var/www/html", "suffix": "nextcloud/html"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "file"}, {"key": "immich", "name": "Immich", "tag": "照片", "desc": "自托管照片/视频备份与 AI 管理（Google Photos 平替）。", "services": [{"name": "server", "image": "ghcr.io/immich-app/server:release", "title": "服务端", "ports": [{"container": "2283", "proto": "tcp", "web": true}], "volumes": [{"container": "/usr/src/app/upload", "suffix": "immich/upload"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "DB_HOSTNAME", "value": "immich_db"}, {"name": "DB_USERNAME", "value": "immich"}, {"name": "DB_PASSWORD", "value": "postgres"}, {"name": "DB_DATABASE_NAME", "value": "immich"}, {"name": "REDIS_HOSTNAME", "value": "immich_redis"}], "privileged": false, "restart": "unless-stopped", "command": ""}, {"name": "db", "image": "tensorchord/pgvecto-rs:pg14-v0.2.0", "title": "数据库", "ports": [], "volumes": [{"container": "/var/lib/postgresql/data", "suffix": "immich/pgdata"}], "envs": [{"name": "POSTGRES_PASSWORD", "value": "postgres"}, {"name": "POSTGRES_USER", "value": "immich"}, {"name": "POSTGRES_DB", "value": "immich"}], "privileged": false, "restart": "unless-stopped", "command": ""}, {"name": "redis", "image": "redis:6.2-alpine", "title": "缓存", "ports": [], "volumes": [{"container": "/data", "suffix": "immich/redis"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "photoprism", "name": "PhotoPrism", "tag": "照片", "desc": "AI 照片管理，自动分类与地图定位。", "services": [{"name": "photoprism", "image": "photoprism/photoprism:latest", "title": "主服务", "ports": [{"container": "2342", "proto": "tcp", "web": true}], "volumes": [{"container": "/photoprism/storage", "suffix": "photoprism/storage"}, {"container": "/photoprism/originals", "suffix": "photos"}], "envs": [{"name": "TZ", "value": "Asia/Shanghai"}, {"name": "PHOTOPRISM_UPLOAD_NSFW", "value": "true"}, {"name": "PHOTOPRISM_ADMIN_PASSWORD", "value": "please_change"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "media"}, {"key": "portainer", "name": "Portainer", "tag": "运维", "desc": "Docker 可视化管理面板。", "services": [{"name": "portainer", "image": "portainer/portainer-ce:latest", "title": "主服务", "ports": [{"container": "9000", "proto": "tcp", "web": true}, {"container": "9443", "proto": "tcp", "web": false}], "volumes": [{"container": "/data", "suffix": "portainer/data"}, {"container": "/var/run/docker.sock", "suffix": "docker.sock", "isSocket": true}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "nginxproxymanager", "name": "Nginx Proxy Manager", "tag": "运维", "desc": "可视化反向代理与 SSL 证书管理。", "services": [{"name": "npm", "image": "jc21/nginx-proxy-manager:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": false}, {"container": "81", "proto": "tcp", "web": true}, {"container": "443", "proto": "tcp", "web": false}], "volumes": [{"container": "/data", "suffix": "npm/data"}, {"container": "/etc/letsencrypt", "suffix": "npm/letsencrypt"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "adguardhome", "name": "AdGuard Home", "tag": "网络", "desc": "自建 DNS 去广告与家庭网络过滤。", "services": [{"name": "adguardhome", "image": "adguard/adguardhome:latest", "title": "主服务", "ports": [{"container": "53", "proto": "tcp", "web": false}, {"container": "53", "proto": "udp", "web": false}, {"container": "3000", "proto": "tcp", "web": true}, {"container": "853", "proto": "tcp", "web": false}], "volumes": [{"container": "/opt/adguardhome/conf", "suffix": "adguard/conf"}, {"container": "/opt/adguardhome/work", "suffix": "adguard/work"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "heimdall", "name": "Heimdall", "tag": "导航", "desc": "自托管应用导航页，聚合常用服务入口。", "services": [{"name": "heimdall", "image": "linuxserver/heimdall:latest", "title": "主服务", "ports": [{"container": "7990", "proto": "tcp", "web": true}], "volumes": [{"container": "/config", "suffix": "heimdall/config"}], "envs": [{"name": "PUID", "value": "1000"}, {"name": "PGID", "value": "100"}, {"name": "TZ", "value": "Asia/Shanghai"}], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "other"}, {"key": "uptimekuma", "name": "Uptime Kuma", "tag": "监控", "desc": "自托管监控与告警（优雅状态页）。", "services": [{"name": "uptimekuma", "image": "louislam/uptime-kuma:latest", "title": "主服务", "ports": [{"container": "3001", "proto": "tcp", "web": true}], "volumes": [{"container": "/app/data", "suffix": "uptimekuma/data"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "memos", "name": "Memos", "tag": "笔记", "desc": "轻量开源笔记/碎片化记录，支持 Markdown。", "services": [{"name": "memos", "image": "neosmemo/memos:latest", "title": "主服务", "ports": [{"container": "5230", "proto": "tcp", "web": true}], "volumes": [{"container": "/var/opt/memos", "suffix": "memos/data"}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "prod"}, {"key": "filebrowser", "name": "File Browser", "tag": "文件", "desc": "Web 文件管理器，可浏览/上传/编辑服务器文件。", "services": [{"name": "filebrowser", "image": "filebrowser/filebrowser:latest", "title": "主服务", "ports": [{"container": "80", "proto": "tcp", "web": true}], "volumes": [{"container": "/srv", "suffix": "filebrowser/srv"}, {"container": "/database.db", "suffix": "filebrowser/database.db", "isFile": true}, {"container": "/filebrowser.json", "suffix": "filebrowser/filebrowser.json", "isFile": true}], "envs": [], "privileged": false, "restart": "unless-stopped", "command": ""}], "group": "file"}];
+const DEFAULT_GROUPS = [{"id": "media", "name": "影音娱乐"}, {"id": "file", "name": "文件管理"}, {"id": "prod", "name": "生产工具"}, {"id": "other", "name": "其他"}];
+const DEFAULT_GROUP_IDS = new Set(DEFAULT_GROUPS.map(g=>g.id));
+const STORE_KEY = 'fnos_ui_v1';
+const removed = new Set();
 
-// 状态
-const state = {
-  hostIP: "192.168.1.100",
-  baseDir: "/vol1/1000/docker",
-  bindIP: false,
-  selected: new Set(),
-  cfg: {},   // key -> { name, svcs: { svcName: { ports:{c:h}, vols:{container:suffix}, env:{name:val} } } }
-};
+// ---- 状态 ----
+const state = { hostIP:"192.168.1.100", baseDir:"/vol1/1000/docker", bindIP:false, selected:new Set(), cfg:{} };
+let groups = DEFAULT_GROUPS.map(g=>({ id:g.id, name:g.name, apps: BUILTIN.filter(a=>a.group===g.id && !removed.has(a.key)).map(a=>a.key) }));
+let customApps = [];
+let allApps = {};
+BUILTIN.forEach(a=>{ if(!removed.has(a.key)) allApps[a.key]=a; });
+function getApp(k){ return allApps[k]; }
 
 function defCfg(app){
-  const svcs = {};
+  const svcs={};
   app.services.forEach(s=>{
-    const ports={}, vols={}, env={};
+    const ports={},vols={},env={};
     s.ports.forEach(p=>ports[p.container]=p.container);
     s.volumes.forEach(v=>vols[v.container]=v.suffix);
     s.envs.forEach(e=>env[e.name]=e.value);
-    svcs[s.name]= {ports, vols, env};
+    svcs[s.name]={ports,vols,env};
   });
-  return {name: app.key, svcs};
+  return {name:app.key, svcs};
+}
+function ensureCfg(app){
+  if(!state.cfg[app.key]) state.cfg[app.key]=defCfg(app);
+  const c=state.cfg[app.key];
+  app.services.forEach(s=>{
+    if(!c.svcs[s.name]) c.svcs[s.name]={ports:{},vols:{},env:{}};
+    s.ports.forEach(p=>{ if(!(p.container in c.svcs[s.name].ports)) c.svcs[s.name].ports[p.container]=p.container; });
+    s.volumes.forEach(v=>{ if(!(v.container in c.svcs[s.name].vols)) c.svcs[s.name].vols[v.container]=v.suffix; });
+    s.envs.forEach(e=>{ if(!(e.name in c.svcs[s.name].env)) c.svcs[s.name].env[e.name]=e.value; });
+  });
 }
 
-// ---------- 渲染应用列表 ----------
-function renderList(){
-  const q = document.getElementById('search').value.trim().toLowerCase();
-  const box = document.getElementById('appList');
-  box.innerHTML='';
-  APPS.forEach(a=>{
-    if(q && !(a.name.toLowerCase().includes(q) || a.tag.toLowerCase().includes(q) || a.key.includes(q))) return;
-    const chip=document.createElement('div');
-    chip.className='app-chip'+(state.selected.has(a.key)?' on':'');
-    chip.innerHTML = `<span>${a.name}</span><span class="tag">${a.tag}</span>`;
-    chip.onclick=()=>toggle(a.key);
-    box.appendChild(chip);
+// ---- 本地持久化 ----
+function saveState(){
+  const data={
+    theme:document.documentElement.dataset.theme,
+    hostIP:state.hostIP, baseDir:state.baseDir, bindIP:state.bindIP,
+    groups:groups.map(g=>({id:g.id,name:g.name,apps:g.apps})),
+    customApps:customApps, removed:[...removed], selected:[...state.selected]
+  };
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }catch(e){}
+}
+function loadState(){
+  let d; try{ d=JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ return false; }
+  if(!d) return false;
+  if(d.theme) applyTheme(d.theme);
+  if(d.hostIP){ state.hostIP=d.hostIP; document.getElementById('hostIP').value=d.hostIP; }
+  if(d.baseDir){ state.baseDir=d.baseDir; document.getElementById('baseDir').value=d.baseDir; }
+  if(typeof d.bindIP==='boolean'){ state.bindIP=d.bindIP; document.getElementById('bindIP').checked=d.bindIP; }
+  removed.clear(); (d.removed||[]).forEach(k=>removed.add(k));
+  customApps = d.customApps||[];
+  allApps={}; BUILTIN.forEach(a=>{ if(!removed.has(a.key)) allApps[a.key]=a; });
+  customApps.forEach(a=>allApps[a.key]=a);
+  groups=(d.groups||[]).map(g=>({id:g.id,name:g.name,apps:g.apps.filter(k=>allApps[k])}));
+  // 保证内置应用至少出现在一个分组（被删分组的内置应用回到默认分组）
+  const placed=new Set(groups.flatMap(g=>g.apps));
+  BUILTIN.forEach(a=>{
+    if(removed.has(a.key)) return;
+    if(!placed.has(a.key)){
+      let g=groups.find(x=>x.id===a.group);
+      if(!g){ g={id:a.group,name:(DEFAULT_GROUPS.find(dg=>dg.id===a.group)||{name:a.group}).name,apps:[]}; groups.push(g); }
+      g.apps.push(a.key); placed.add(a.key);
+    }
   });
+  state.selected=new Set(d.selected||[]);
+  state.cfg={}; state.selected.forEach(k=>{ if(allApps[k]) state.cfg[k]=defCfg(allApps[k]); });
+  return true;
+}
+
+// ---- 主题 ----
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  try{ localStorage.setItem('fnos_theme',t); }catch(e){}
+  document.getElementById('themeBtn').textContent = t==='light' ? '🌙 黑夜' : '☀️ 白天';
+}
+applyTheme(localStorage.getItem('fnos_theme')||'dark');
+document.getElementById('themeBtn').onclick=()=> applyTheme(document.documentElement.dataset.theme==='light'?'dark':'light');
+
+// ---- 渲染分组列表 ----
+let dragKey=null;
+function renderList(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  const box=document.getElementById('appList'); box.innerHTML='';
+  groups.forEach(g=>{
+    const sec=document.createElement('div'); sec.className='group'; sec.dataset.gid=g.id;
+    const head=document.createElement('div'); head.className='group-head';
+    head.innerHTML=`<span class="gt">${g.name}</span><span class="gc">${g.apps.length}</span>`;
+    const delG=document.createElement('button'); delG.className='mini-btn del'; delG.textContent='删除分组';
+    delG.onclick=()=>deleteGroup(g.id); head.appendChild(delG);
+    const add=document.createElement('button'); add.className='mini-btn add'; add.textContent='+ 自定义应用';
+    add.onclick=()=>openCustomModal(g.id,null); head.appendChild(add);
+    sec.appendChild(head);
+    const chips=document.createElement('div'); chips.className='apps';
+    g.apps.forEach(key=>{
+      const a=getApp(key); if(!a) return;
+      if(q && !(a.name.toLowerCase().includes(q)||a.tag.toLowerCase().includes(q)||key.includes(q))) return;
+      const chip=document.createElement('div');
+      chip.className='app-chip'+(state.selected.has(key)?' on':'');
+      chip.innerHTML=`<span>${a.name}</span><span class="tag">${a.tag}</span>`;
+      if(key.indexOf('custom_')===0){
+        const ed=document.createElement('span'); ed.className='edit'; ed.textContent='✎'; ed.title='编辑应用';
+        ed.onclick=(e)=>{ e.stopPropagation(); openCustomModal(g.id,key); }; chip.appendChild(ed);
+      }
+      const del=document.createElement('span'); del.className='del'; del.textContent='×'; del.title='删除应用';
+      del.onclick=(e)=>{ e.stopPropagation(); deleteApp(key); }; chip.appendChild(del);
+      chip.onclick=()=>toggle(key);
+      makeDraggable(chip,key);
+      chips.appendChild(chip);
+    });
+    chips.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; sec.classList.add('dragover'); });
+    chips.addEventListener('dragleave',()=>sec.classList.remove('dragover'));
+    chips.addEventListener('drop',e=>{ e.preventDefault(); sec.classList.remove('dragover'); dropOnGroup(e,g.id,chips); });
+    sec.appendChild(chips);
+    box.appendChild(sec);
+  });
+  const addG=document.createElement('button'); addG.className='mini-btn add wide'; addG.textContent='+ 添加分组';
+  addG.onclick=addGroup; box.appendChild(addG);
+}
+function makeDraggable(chip,key){
+  chip.draggable=true;
+  chip.addEventListener('dragstart',e=>{ dragKey=key; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',key); chip.classList.add('drag'); });
+  chip.addEventListener('dragend',()=>{ dragKey=null; document.querySelectorAll('.app-chip').forEach(c=>c.classList.remove('drag')); document.querySelectorAll('.group').forEach(s=>s.classList.remove('dragover')); });
+}
+function dropOnGroup(e,gid,container){
+  const key=dragKey; if(!key) return;
+  const chips=[...container.querySelectorAll('.app-chip')];
+  let idx=chips.length;
+  for(let i=0;i<chips.length;i++){ const r=chips[i].getBoundingClientRect(); if(e.clientY < r.top + r.height/2){ idx=i; break; } }
+  const g=groups.find(x=>x.id===gid); if(!g) return;
+  const orig=g.apps.indexOf(key);
+  groups.forEach(gg=>{ const i=gg.apps.indexOf(key); if(i>=0) gg.apps.splice(i,1); });
+  if(orig>=0 && orig<idx) idx--;
+  g.apps.splice(idx,0,key);
+  saveState(); renderList();
 }
 
 function toggle(key){
   if(state.selected.has(key)){ state.selected.delete(key); delete state.cfg[key]; }
-  else { state.selected.add(key); state.cfg[key]=defCfg(APPS.find(a=>a.key===key)); }
+  else { state.selected.add(key); state.cfg[key]=defCfg(getApp(key)); }
   renderList(); renderCards(); renderOut();
 }
+function addGroup(){
+  const name=prompt('请输入新分组名称：'); if(!name||!name.trim()) return;
+  groups.push({ id:'g_'+Date.now(), name:name.trim(), apps:[] }); saveState(); renderList();
+}
+function deleteGroup(id){
+  if(groups.length<=1){ alert('至少保留一个分组'); return; }
+  const g=groups.find(x=>x.id===id); if(!g) return;
+  if(!confirm('删除分组「'+g.name+'」？\n组内自定义应用将被删除，内置应用会回到其默认分组。')) return;
+  g.apps.forEach(key=>{
+    if(key.indexOf('custom_')===0){ customApps=customApps.filter(a=>a.key!==key); delete allApps[key]; state.selected.delete(key); delete state.cfg[key]; }
+    else {
+      let dg=groups.find(x=>x.id===getApp(key).group && x.id!==id);
+      if(!dg){ dg={id:getApp(key).group,name:(DEFAULT_GROUPS.find(d=>d.id===getApp(key).group)||{name:getApp(key).group}).name,apps:[]}; groups.push(dg); }
+      if(dg.apps.indexOf(key)<0) dg.apps.push(key);
+    }
+  });
+  groups=groups.filter(x=>x.id!==id);
+  saveState(); renderList(); renderCards(); renderOut();
+}
+function deleteApp(key){
+  const a=getApp(key); if(!a) return;
+  if(!confirm('确定删除应用「'+a.name+'」？'+(key.indexOf('custom_')===0?'':'（内置应用删除后刷新页面会恢复）'))) return;
+  groups.forEach(g=>{ const i=g.apps.indexOf(key); if(i>=0) g.apps.splice(i,1); });
+  if(key.indexOf('custom_')===0){ customApps=customApps.filter(x=>x.key!==key); }
+  else { removed.add(key); }
+  delete allApps[key]; state.selected.delete(key); delete state.cfg[key];
+  saveState(); renderList(); renderCards(); renderOut();
+}
 
-// ---------- 渲染配置卡片 ----------
+// ---- 自定义应用弹窗 ----
+let modalDraft=null;
+const modal=document.getElementById('modal');
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function openCustomModal(groupId,editKey){
+  let d;
+  if(editKey){
+    const a=getApp(editKey); const s=a.services[0];
+    d={ groupId, editKey, name:a.name, image:s.image,
+        ports:s.ports.map(p=>({...p})), volumes:s.volumes.map(v=>({...v})), envs:s.envs.map(e=>({...e})) };
+  } else {
+    d={ groupId, editKey:null, name:'', image:'',
+        ports:[{container:'8080',proto:'tcp',web:true}],
+        volumes:[{container:'/config',suffix:'app/config'}], envs:[] };
+  }
+  modalDraft=d; modal.style.display='flex'; renderModal();
+}
+function closeModal(){ modal.style.display='none'; modalDraft=null; }
+function renderModal(){
+  const d=modalDraft;
+  let h=`<div class="modal-head"><span>${d.editKey?'编辑自定义应用':'新增自定义应用'}</span><button class="x" id="mClose">×</button></div>`;
+  h+=`<div class="modal-body">`;
+  h+=`<div class="field"><label>应用名称</label><input id="mName" type="text" value="${esc(d.name)}" placeholder="如 我的工具"></div>`;
+  h+=`<div class="field"><label>镜像地址</label><input id="mImage" type="text" value="${esc(d.image)}" placeholder="如 linuxserver/qbittorrent:latest"></div>`;
+  h+=`<div class="sub"><span>容器端口</span><button class="mini-btn add" id="addPort">+ 端口</button></div>`;
+  h+=`<table class="mtab"><tr><th>容器端口</th><th>协议</th><th>Web</th><th></th></tr>`;
+  d.ports.forEach((p,i)=>{ h+=`<tr><td><input data-pi="${i}" class="pC" value="${esc(p.container)}"></td>`+
+    `<td><select data-pi="${i}" class="pP"><option ${p.proto==='tcp'?'selected':''}>tcp</option><option ${p.proto==='udp'?'selected':''}>udp</option></select></td>`+
+    `<td style="text-align:center"><input type="checkbox" data-pi="${i}" class="pW" ${p.web?'checked':''}></td>`+
+    `<td><button class="mini-btn" data-pdel="${i}">×</button></td></tr>`; });
+  h+=`</table>`;
+  h+=`<div class="sub"><span>路径映射（容器路径 / 映射后缀）</span><button class="mini-btn add" id="addVol">+ 路径</button></div>`;
+  h+=`<table class="mtab"><tr><th>容器路径</th><th>映射后缀</th><th></th></tr>`;
+  d.volumes.forEach((v,i)=>{ h+=`<tr><td><input data-vi="${i}" class="vC" value="${esc(v.container)}"></td>`+
+    `<td><input data-vi="${i}" class="vS" value="${esc(v.suffix)}"></td>`+
+    `<td><button class="mini-btn" data-vdel="${i}">×</button></td></tr>`; });
+  h+=`</table>`;
+  h+=`<div class="sub"><span>环境变量</span><button class="mini-btn add" id="addEnv">+ 变量</button></div>`;
+  h+=`<table class="mtab"><tr><th>名称</th><th>值</th><th></th></tr>`;
+  d.envs.forEach((e,i)=>{ h+=`<tr><td><input data-ei="${i}" class="eN" value="${esc(e.name)}"></td>`+
+    `<td><input data-ei="${i}" class="eV" value="${esc(e.value)}"></td>`+
+    `<td><button class="mini-btn" data-edel="${i}">×</button></td></tr>`; });
+  h+=`</table>`;
+  h+=`</div>`;
+  h+=`<div class="modal-foot"><button class="btn ghost" id="mCancel">取消</button><button class="btn" id="mSave">保存</button></div>`;
+  document.getElementById('modalBox').innerHTML=h;
+  document.getElementById('mClose').onclick=closeModal;
+  document.getElementById('mCancel').onclick=closeModal;
+  document.getElementById('addPort').onclick=()=>{ d.ports.push({container:'8080',proto:'tcp',web:false}); renderModal(); };
+  document.getElementById('addVol').onclick=()=>{ d.volumes.push({container:'/data',suffix:'app/data'}); renderModal(); };
+  document.getElementById('addEnv').onclick=()=>{ d.envs.push({name:'KEY',value:'VALUE'}); renderModal(); };
+  modalBoxQ('[data-pdel]',b=>b.onclick=()=>{ d.ports.splice(+b.dataset.pdel,1); renderModal(); });
+  modalBoxQ('[data-vdel]',b=>b.onclick=()=>{ d.volumes.splice(+b.dataset.vdel,1); renderModal(); });
+  modalBoxQ('[data-edel]',b=>b.onclick=()=>{ d.envs.splice(+b.dataset.edel,1); renderModal(); });
+  modalBoxQ('.pC',inp=>inp.oninput=()=>d.ports[+inp.dataset.pi].container=inp.value);
+  modalBoxQ('.pP',inp=>inp.onchange=()=>d.ports[+inp.dataset.pi].proto=inp.value);
+  modalBoxQ('.pW',inp=>inp.onchange=()=>d.ports[+inp.dataset.pi].web=inp.checked);
+  modalBoxQ('.vC',inp=>inp.oninput=()=>d.volumes[+inp.dataset.vi].container=inp.value);
+  modalBoxQ('.vS',inp=>inp.oninput=()=>d.volumes[+inp.dataset.vi].suffix=inp.value);
+  modalBoxQ('.eN',inp=>inp.oninput=()=>d.envs[+inp.dataset.ei].name=inp.value);
+  modalBoxQ('.eV',inp=>inp.oninput=()=>d.envs[+inp.dataset.ei].value=inp.value);
+  document.getElementById('mSave').onclick=saveCustom;
+}
+function modalBoxQ(sel,fn){ document.getElementById('modalBox').querySelectorAll(sel).forEach(fn); }
+function saveCustom(){
+  const name=document.getElementById('mName').value.trim();
+  const image=document.getElementById('mImage').value.trim();
+  if(!name||!image){ alert('请填写应用名称和镜像地址'); return; }
+  const d=modalDraft; d.name=name; d.image=image;
+  if(d.editKey){
+    const a=getApp(d.editKey);
+    a.name=name; a.services[0].image=image;
+    a.services[0].ports=d.ports; a.services[0].volumes=d.volumes; a.services[0].envs=d.envs;
+    ensureCfg(a);
+  } else {
+    const key='custom_'+Date.now();
+    const app={ key, name, desc:'自定义应用', tag:'自定义',
+      services:[{ name:'main', image, title:'主服务', ports:d.ports, volumes:d.volumes, envs:d.envs, privileged:false, restart:'unless-stopped', command:'' }] };
+    customApps.push(app); allApps[key]=app;
+    const g=groups.find(x=>x.id===d.groupId); if(g) g.apps.push(key);
+    state.selected.add(key); state.cfg[key]=defCfg(app);
+  }
+  closeModal(); saveState(); renderList(); renderCards(); renderOut();
+}
+
+// ---- 渲染配置卡片 ----
 function renderCards(){
   const box=document.getElementById('cards');
-  if(state.selected.size===0){ box.innerHTML='<div class="empty">左侧勾选应用后，在此自定义端口与路径</div>'; return; }
+  const keys=[...state.selected];
+  if(keys.length===0){ box.innerHTML='<div class="empty">左侧勾选应用后，在此自定义端口与路径</div>'; return; }
   box.innerHTML='';
-  APPS.filter(a=>state.selected.has(a.key)).forEach(app=>{
+  keys.forEach(key=>{
+    const app=getApp(key); if(!app) return;
     const card=document.createElement('div'); card.className='card';
-    const c=state.cfg[app.key];
+    const c=state.cfg[key];
     let html=`<div class="chead"><div><b>${app.name}</b> <span class="desc">${app.desc}</span></div></div>`;
     app.services.forEach(s=>{
-      const multi = app.services.length>1;
-      const sname = s.name;
+      const multi=app.services.length>1;
       html+=`<div class="svc"><div class="svcname">${multi? s.title+'（'+s.image+'）' : s.image}</div>`;
-      // 端口
       if(s.ports.length){
         html+=`<table><tr><th>容器端口</th><th>协议</th><th>主机端口（可改）</th></tr>`;
         s.ports.forEach(p=>{
-          html+=`<tr><td>${p.container}</td><td>${p.proto}${p.web?' ·Web':''}</td>
-            <td><input type="number" style="width:90px" data-k="${app.key}" data-s="${sname}" data-t="port" data-c="${p.container}" value="${c.svcs[sname].ports[p.container]}"></td></tr>`;
+          html+=`<tr><td>${p.container}</td><td>${p.proto}${p.web?' ·Web':''}</td>`+
+            `<td><input type="number" style="width:90px" data-k="${key}" data-s="${s.name}" data-t="port" data-c="${p.container}" value="${c.svcs[s.name].ports[p.container]}"></td></tr>`;
         });
         html+=`</table>`;
       }
-      // 卷
       if(s.volumes.length){
         html+=`<table><tr><th>映射后缀（基准路径后）</th><th>容器路径</th></tr>`;
         s.volumes.forEach(v=>{
-          html+=`<tr><td class="pfx">${state.baseDir}/</td>
-            <td><input type="text" data-k="${app.key}" data-s="${sname}" data-t="vol" data-c="${v.container}" value="${c.svcs[sname].vols[v.container]}"></td>
-            <td style="color:var(--muted)">${v.container}</td></tr>`;
+          html+=`<tr><td class="pfx">${state.baseDir}/</td>`+
+            `<td><input type="text" data-k="${key}" data-s="${s.name}" data-t="vol" data-c="${v.container}" value="${c.svcs[s.name].vols[v.container]}"></td>`+
+            `<td style="color:var(--muted)">${v.container}</td></tr>`;
         });
         html+=`</table>`;
       }
-      // 环境变量
       if(s.envs.length){
         html+=`<table><tr><th>环境变量</th><th>值（可改）</th></tr>`;
         s.envs.forEach(e=>{
-          html+=`<tr><td style="color:var(--muted)">${e.name}</td>
-            <td><input type="text" data-k="${app.key}" data-s="${sname}" data-t="env" data-c="${e.name}" value="${c.svcs[sname].env[e.name]}"></td></tr>`;
+          html+=`<tr><td style="color:var(--muted)">${e.name}</td>`+
+            `<td><input type="text" data-k="${key}" data-s="${s.name}" data-t="env" data-c="${e.name}" value="${c.svcs[s.name].env[e.name]}"></td></tr>`;
         });
         html+=`</table>`;
       }
       html+=`</div>`;
     });
-    card.innerHTML=html;
-    box.appendChild(card);
+    card.innerHTML=html; box.appendChild(card);
   });
-  // 绑定输入事件
   box.querySelectorAll('input').forEach(inp=>{
     inp.addEventListener('input',e=>{
-      const {k,s,t,c}=inp.dataset;
-      const val=inp.value;
+      const {k,s,t,c}=inp.dataset; const val=inp.value;
       if(t==='port') state.cfg[k].svcs[s].ports[c]=val;
       else if(t==='vol') state.cfg[k].svcs[s].vols[c]=val;
       else if(t==='env') state.cfg[k].svcs[s].env[c]=val;
@@ -229,9 +488,10 @@ function renderCards(){
   });
 }
 
-// ---------- 生成 compose ----------
+// ---- 生成 compose（按应用名自动排序）----
+function sortedSel(){ return [...state.selected].map(getApp).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name,'zh')); }
 function buildCompose(){
-  const sel=APPS.filter(a=>state.selected.has(a.key));
+  const sel=sortedSel();
   let out="# ============================================\n";
   out+="# 飞牛 FnOS Docker 部署 (合并 compose)\n";
   out+=`# 主机IP: ${state.hostIP}  数据根目录: ${state.baseDir}\n`;
@@ -241,7 +501,7 @@ function buildCompose(){
   sel.forEach(app=>{
     const c=state.cfg[app.key];
     app.services.forEach(s=>{
-      const svcKey = app.services.length>1 ? s.name : app.key;
+      const svcKey=app.services.length>1 ? s.name : app.key;
       out+=`  ${svcKey}:\n`;
       out+=`    image: ${s.image}\n`;
       if(s.privileged) out+=`    privileged: true\n`;
@@ -271,21 +531,22 @@ function buildCompose(){
       }
     });
   });
-  out+="\nnetworks:\n  default:\n    name: "+NET+"\n";
+  out+="\nnetworks:\n  default:\n    name: fnos_net\n";
   return out;
 }
 
-// ---------- 生成 docker run ----------
+// ---- 生成 docker run（按应用名自动排序）----
+function c_web(app,s,p){ return state.cfg[app.key].svcs[s.name].ports[p.container]; }
 function buildRun(){
-  const sel=APPS.filter(a=>state.selected.has(a.key));
+  const sel=sortedSel();
   let out="# 共享网络（多服务应用依赖容器名解析）\n";
-  out+=`docker network create ${NET} 2>/dev/null || true\n`;
+  out+=`docker network create fnos_net 2>/dev/null || true\n`;
   sel.forEach(app=>{
     out+=`\n# ---- ${app.name} ----\n`;
     app.services.forEach(s=>{
       const c=state.cfg[app.key].svcs[s.name];
-      const cname = app.services.length>1 ? `${app.key}_${s.name}` : app.key;
-      let cmd=`docker run -d --name ${cname} --restart ${s.restart||'unless-stopped'} --network ${NET}`;
+      const cname=app.services.length>1 ? `${app.key}_${s.name}` : app.key;
+      let cmd=`docker run -d --name ${cname} --restart ${s.restart||'unless-stopped'} --network fnos_net`;
       if(s.privileged) cmd+=" --privileged";
       s.ports.forEach(p=>{
         const h=c.ports[p.container];
@@ -298,32 +559,26 @@ function buildRun(){
       cmd+=` ${s.image}`;
       out+=cmd+"\n";
     });
-    // 访问地址
     app.services.forEach(s=>{
       s.ports.forEach(p=>{ if(p.web) out+=`# 访问: http://${state.hostIP}:${c_web(app,s,p)}\n`; });
     });
   });
   return out;
 }
-function c_web(app,s,p){ return state.cfg[app.key].svcs[s.name].ports[p.container]; }
 
-// ---------- 渲染输出 ----------
+// ---- 渲染输出 ----
 let curTab='compose';
-function renderOut(){
-  const out=document.getElementById('out');
-  out.textContent = curTab==='compose' ? buildCompose() : buildRun();
-}
+function renderOut(){ document.getElementById('out').textContent = curTab==='compose' ? buildCompose() : buildRun(); }
 
-// ---------- 事件 ----------
-document.getElementById('hostIP').addEventListener('input',e=>{state.hostIP=e.target.value;renderCards();renderOut();});
-document.getElementById('baseDir').addEventListener('input',e=>{state.baseDir=e.target.value;renderCards();renderOut();});
-document.getElementById('bindIP').addEventListener('change',e=>{state.bindIP=e.target.checked;renderOut();});
+// ---- 事件 ----
+document.getElementById('hostIP').addEventListener('input',e=>{state.hostIP=e.target.value;saveState();renderCards();renderOut();});
+document.getElementById('baseDir').addEventListener('input',e=>{state.baseDir=e.target.value;saveState();renderCards();renderOut();});
+document.getElementById('bindIP').addEventListener('change',e=>{state.bindIP=e.target.checked;saveState();renderOut();});
 document.getElementById('search').addEventListener('input',renderList);
 document.querySelectorAll('.tab').forEach(t=>{
   t.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
     t.classList.add('on'); curTab=t.dataset.tab; renderOut(); };
 });
-
 function copy(text){ navigator.clipboard.writeText(text).then(()=>showToast('已复制')); }
 document.getElementById('copyBtn').onclick=()=>copy(document.getElementById('out').textContent);
 document.getElementById('dlBtn').onclick=()=>{
@@ -331,12 +586,12 @@ document.getElementById('dlBtn').onclick=()=>{
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='docker-compose.fnos.yml'; a.click();
 };
-
 let toastT;
 function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1500); }
 
 // init
+loadState();
 renderList(); renderCards(); renderOut();
 </script>
 </body>
